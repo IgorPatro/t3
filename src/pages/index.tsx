@@ -1,5 +1,5 @@
 import React from "react";
-import { type NextPage, type GetServerSideProps } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "@/utils/api";
 import Image from "next/image";
@@ -11,14 +11,6 @@ import { createTRPCContext } from "@/server/api/trpc";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 const Home: NextPage = () => {
-  const [userInput, setUserInput] = React.useState("");
-
-  const allUsersQuery = api.user.getAll.useQuery();
-  const userQuery = api.user.getOne.useQuery({
-    id: "00e44f05-dd7d-42fe-95a1-7ffc1edb8235",
-  });
-
-  const registerMutation = api.auth.register.useMutation();
   const loginMutation = api.auth.login.useMutation({
     onSuccess: (data) => {
       console.log(data);
@@ -26,17 +18,6 @@ const Home: NextPage = () => {
   });
 
   const meQuery = api.auth.me.useQuery();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    registerMutation.mutate({
-      firstName: "Igor",
-      lastName: "Patro",
-      email: `i.patro@wp.pl`,
-      password: "123456",
-      repPassword: "123456",
-    });
-  };
 
   return (
     <>
@@ -47,21 +28,8 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <h1 className="text-4xl font-bold">
-          Hello {userQuery.isSuccess && userQuery.data?.firstName}!
+          Hello {meQuery.isSuccess && meQuery.data.user.id}!
         </h1>
-        <ul>
-          {allUsersQuery.isSuccess &&
-            allUsersQuery.data.map((user) => (
-              <li key={user.id}>{user.firstName}</li>
-            ))}
-        </ul>
-        <form onSubmit={handleSubmit}>
-          <input
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            placeholder="First name"
-          />
-        </form>
         <button
           onClick={() =>
             loginMutation.mutate({
@@ -87,7 +55,9 @@ export const getServerSideProps = async (ctx: CreateNextContextOptions) => {
     transformer: superjson,
   });
 
+  // Here is caching also - if I will fetch this on clinet I will get cached result <3
   const me = await ssg.auth.me.fetch().catch(() => false);
+  const users = await ssg.user.getAll.fetch();
 
   return {
     props: {
