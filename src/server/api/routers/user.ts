@@ -9,7 +9,7 @@ export const userRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
 
-    return { users, session: ctx.session };
+    return users;
   }),
   getOne: privateProcedure
     .input(z.object({ id: z.string() }))

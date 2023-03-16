@@ -1,9 +1,14 @@
 import React from "react";
-import { type NextPage } from "next";
+import { type NextPage, type GetServerSideProps } from "next";
 import Head from "next/head";
 import { api } from "@/utils/api";
 import Image from "next/image";
 import cover from "@/assets/images/cover.png";
+import { appRouter } from "@/server/api/root";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import superjson from "superjson";
+import { createTRPCContext } from "@/server/api/trpc";
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 const Home: NextPage = () => {
   const [userInput, setUserInput] = React.useState("");
@@ -33,8 +38,6 @@ const Home: NextPage = () => {
     });
   };
 
-  console.log("meQuery", meQuery.data);
-
   return (
     <>
       <Head>
@@ -48,7 +51,7 @@ const Home: NextPage = () => {
         </h1>
         <ul>
           {allUsersQuery.isSuccess &&
-            allUsersQuery.data.users.map((user) => (
+            allUsersQuery.data.map((user) => (
               <li key={user.id}>{user.firstName}</li>
             ))}
         </ul>
@@ -76,3 +79,19 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getServerSideProps = async (ctx: CreateNextContextOptions) => {
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: createTRPCContext(ctx),
+    transformer: superjson,
+  });
+
+  const me = await ssg.auth.me.fetch().catch(() => false);
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};

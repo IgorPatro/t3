@@ -32,7 +32,15 @@ const isAuthed = t.middleware(({ next, ctx }) => {
     });
   }
 
-  const userId = verify(ctx.session, "secret");
+  let userId: string;
+
+  try {
+    userId = verify(ctx.session, "secret") as string;
+  } catch (error) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
 
   return next({
     ctx: {
