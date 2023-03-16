@@ -8,22 +8,32 @@ import cover from "@/assets/images/cover.png";
 const Home: NextPage = () => {
   const [userInput, setUserInput] = React.useState("");
 
-  const helloQuery = api.example.hello.useQuery();
   const allUsersQuery = api.user.getAll.useQuery();
   const userQuery = api.user.getOne.useQuery({
     id: "00e44f05-dd7d-42fe-95a1-7ffc1edb8235",
   });
 
-  const createUserMutation = api.user.create.useMutation();
+  const registerMutation = api.auth.register.useMutation();
+  const loginMutation = api.auth.login.useMutation({
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
+
+  const meQuery = api.auth.me.useQuery();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createUserMutation.mutate({
+    registerMutation.mutate({
       firstName: userInput,
       lastName: "Doe",
       email: `${Math.random().toString(16)}@test.pl`,
+      password: "123456",
+      repPassword: "123456",
     });
   };
+
+  console.log("meQuery", meQuery.data);
 
   return (
     <>
@@ -36,7 +46,6 @@ const Home: NextPage = () => {
         <h1 className="text-4xl font-bold">
           Hello {userQuery.isSuccess && userQuery.data?.firstName}!
         </h1>
-        {helloQuery.isSuccess && helloQuery.data.greeting}
         <ul>
           {allUsersQuery.isSuccess &&
             allUsersQuery.data.users.map((user) => (
@@ -47,8 +56,19 @@ const Home: NextPage = () => {
           <input
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
+            placeholder="First name"
           />
         </form>
+        <button
+          onClick={() =>
+            loginMutation.mutate({
+              email: "0.7fe0c92c310e78@test.pl",
+              password: "123456",
+            })
+          }
+        >
+          Zaloguj
+        </button>
         <Image src={cover} alt="Cover" />
       </main>
     </>

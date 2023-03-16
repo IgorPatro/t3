@@ -1,11 +1,15 @@
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { prisma } from "@/server/db";
 import { TRPCError } from "@trpc/server";
+import { verify } from "jsonwebtoken";
+import { parseCookies } from "nookies";
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+  const { session } = parseCookies(_opts);
+
   return {
     prisma,
-    session: _opts.req.cookies.session,
+    session,
   };
 };
 
@@ -27,9 +31,14 @@ const isAuthed = t.middleware(({ next, ctx }) => {
       code: "UNAUTHORIZED",
     });
   }
+
+  const user = verify(ctx.session, "secret");
+
+  console.log(user);
+
   return next({
     ctx: {
-      session: ctx.session,
+      user,
     },
   });
 });

@@ -2,7 +2,6 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
-
 import { type AppRouter } from "@/server/api/root";
 
 const getBaseUrl = () => {
@@ -12,7 +11,7 @@ const getBaseUrl = () => {
 };
 
 export const api = createTRPCNext<AppRouter>({
-  config() {
+  config({ ctx }) {
     return {
       transformer: superjson,
       links: [
