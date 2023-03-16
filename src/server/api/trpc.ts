@@ -32,15 +32,9 @@ const isAuthed = t.middleware(({ next, ctx }) => {
     });
   }
 
-  const user = verify(ctx.session, "secret");
+  const userId = verify(ctx.session, "secret");
 
-  console.log(user);
-
-  return next({
-    ctx: {
-      user,
-    },
-  });
+  return next();
 });
 
 export const publicProcedure = t.procedure;

@@ -66,13 +66,11 @@ export const authRouter = createTRPCRouter({
 
     return token;
   }),
-  me: privateProcedure.query(async ({ ctx }) => {
-    const user = { ctx };
-
-    // const userDB = await ctx.prisma.user.findFirst({
-    //   where: { id: user.id },
-    // });
-
-    return user;
+  me: privateProcedure.query(() => {
+    return {
+      user: {
+        id: "1",
+      },
+    };
   }),
 });
