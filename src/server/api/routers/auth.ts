@@ -66,10 +66,12 @@ export const authRouter = createTRPCRouter({
 
     return token;
   }),
-  me: privateProcedure.query(() => {
+  me: privateProcedure.query(({ ctx }) => {
+    const { userId } = ctx;
+
     return {
       user: {
-        id: "1",
+        id: userId,
       },
     };
   }),

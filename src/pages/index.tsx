@@ -25,9 +25,9 @@ const Home: NextPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     registerMutation.mutate({
-      firstName: userInput,
-      lastName: "Doe",
-      email: `${Math.random().toString(16)}@test.pl`,
+      firstName: "Igor",
+      lastName: "Patro",
+      email: `i.patro@wp.pl`,
       password: "123456",
       repPassword: "123456",
     });
@@ -62,7 +62,7 @@ const Home: NextPage = () => {
         <button
           onClick={() =>
             loginMutation.mutate({
-              email: "0.7fe0c92c310e78@test.pl",
+              email: "i.patro@wp.pl",
               password: "123456",
             })
           }
