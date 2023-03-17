@@ -1,5 +1,4 @@
 import React from "react";
-import { type NextPage } from "next";
 import Head from "next/head";
 import { api } from "@/utils/api";
 import Image from "next/image";
@@ -10,7 +9,7 @@ import superjson from "superjson";
 import { createTRPCContext } from "@/server/api/trpc";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 
-const Home: NextPage = () => {
+const HomePage = () => {
   const loginMutation = api.auth.login.useMutation({
     onSuccess: (data) => {
       console.log(data);
@@ -18,6 +17,12 @@ const Home: NextPage = () => {
   });
 
   const meQuery = api.auth.me.useQuery();
+
+  const random = api.randomNumber.useSubscription(undefined, {
+    onData(n) {
+      console.log(n);
+    },
+  });
 
   return (
     <>
@@ -31,6 +36,7 @@ const Home: NextPage = () => {
           Hello {meQuery.isSuccess && meQuery.data.user.id}!
         </h1>
         <button
+          className="btn"
           onClick={() =>
             loginMutation.mutate({
               email: "i.patro@wp.pl",
@@ -40,13 +46,14 @@ const Home: NextPage = () => {
         >
           Zaloguj
         </button>
+        <button className="btn">Emit</button>
         <Image src={cover} alt="Cover" />
       </main>
     </>
   );
 };
 
-export default Home;
+export default HomePage;
 
 export const getServerSideProps = async (ctx: CreateNextContextOptions) => {
   const ssg = createProxySSGHelpers({

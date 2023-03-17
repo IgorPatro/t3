@@ -3,6 +3,8 @@ import { prisma } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { verify } from "jsonwebtoken";
 import { parseCookies } from "nookies";
+import { initTRPC } from "@trpc/server";
+import superjson from "superjson";
 
 export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   const { session } = parseCookies(_opts);
@@ -12,9 +14,6 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
     session,
   };
 };
-
-import { initTRPC } from "@trpc/server";
-import superjson from "superjson";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,

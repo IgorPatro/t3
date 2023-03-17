@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "dev:wss": "tsx watch ./src/server/api/wssDevServer.ts --tsconfig tsconfig.server.json",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
@@ -21,6 +22,7 @@
     "@trpc/server": "^10.9.0",
     "@types/bcrypt": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.1",
+    "@types/ws": "^8.5.4",
     "bcrypt": "^5.1.0",
     "daisyui": "^2.51.4",
     "jsonwebtoken": "^9.0.0",
@@ -28,7 +30,12 @@
     "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sharp": "^0.31.3",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
     "superjson": "1.9.1",
+    "tsx": "^3.12.5",
+    "ws": "^8.13.0",
     "zod": "^3.20.6"
   },
   "devDependencies": {
