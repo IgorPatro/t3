@@ -6,7 +6,7 @@ import {
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { hash, compare } from "bcrypt";
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 
 export const RegisterSchema = z.object({
   email: z.string(),

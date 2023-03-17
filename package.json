@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:wss": "tsc --project tsconfig.server.json",
     "dev": "next dev",
     "dev:wss": "tsx watch ./src/server/api/wssDevServer.ts --tsconfig tsconfig.server.json",
     "postinstall": "prisma generate",
